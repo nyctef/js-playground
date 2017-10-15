@@ -60,12 +60,28 @@ function setLeft(ms, next) {
     }
 }
 
+function setTop(ms, next) {
+    return {
+        ...next(ms),
+        top: ms
+    }
+}
+
+function combine(...animationArrays) {
+    let pipelines = animationArrays.map(aa => buildPipeline(aa))
+    return function(ms, next) {
+        return Object.assign({}, next(ms), ...pipelines.map(p => p(ms)))
+    }
+}
+
 let animations = [
     baseline(),
     resetAfter(1000),
-    scale(1/50),
-    setLeft,
-    ];
+    combine(
+        [scale(1/50), setLeft],
+        [scale(1/500), setTop],
+    ),
+];
 
 function getNextInPipeline(animation, pipeline) {
    return function(ms) { return animation(ms, pipeline) }
@@ -89,8 +105,7 @@ drift.style.left = 20;
 
 requestAnimationFrames(ms => {
     drift.style.left = pipeline(ms).left;
-    //drift.style.left = (ms % 1000) / 50
-    //drift.style.top = (ms % 1000) / 500
+    drift.style.top = pipeline(ms).top;
 })
 
     </script>
