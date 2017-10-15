@@ -11,7 +11,7 @@
 
 function requestAnimationFrames(callback) {
 
-    var cancelRequestId;
+    let cancelRequestId;
     
     function nextFrame(callback) {
         window.requestAnimationFrame(timestamp => {
@@ -29,7 +29,7 @@ function requestAnimationFrames(callback) {
 }
 
 function baseline() {
-    var start = performance.now()
+    let start = performance.now()
     return function baseline(ms, next) {
         return next(performance.now() - start)
     }
@@ -60,7 +60,7 @@ function setLeft(ms, next) {
     }
 }
 
-var animations = [
+let animations = [
     baseline(),
     resetAfter(1000),
     scale(1/50),
@@ -72,8 +72,8 @@ function getNextInPipeline(animation, pipeline) {
 }
 
 function buildPipeline(animations) {
-    var pipeline = (ms) => ({})
-    var i = animations.length - 1
+    let pipeline = (ms) => ({})
+    let i = animations.length - 1
     while (i >= 0) {
         pipeline = getNextInPipeline(animations[i], pipeline)
         i--
@@ -81,9 +81,9 @@ function buildPipeline(animations) {
     return pipeline
 }
 
-var pipeline = buildPipeline(animations)
+let pipeline = buildPipeline(animations)
 
-var drift = document.getElementById('drift');
+let drift = document.getElementById('drift');
 drift.style.position = 'relative'
 drift.style.left = 20;
 
