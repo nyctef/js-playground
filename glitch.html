@@ -1,0 +1,42 @@
+<html>
+    <head></head>
+    <body>
+        <div style="display: flex; flex-direction: column; align-items:center">
+            <div id=drift>
+                drift text
+            </div>
+        </div>
+    </body>
+    <script>
+
+function requestAnimationFrames(callback) {
+
+    var cancelRequestId;
+    
+    function nextFrame(callback) {
+        window.requestAnimationFrame(timestamp => {
+            callback(timestamp)
+            cancelRequestId = requestAnimationFrames
+            nextFrame(callback)
+        })
+    }
+
+    nextFrame(callback)
+
+    return function cancelRequest() {
+        window.cancelAnimationFrame(canceRequestId)
+    }
+}
+
+
+var drift = document.getElementById('drift');
+drift.style.position = 'relative'
+drift.style.left = 20;
+
+requestAnimationFrames(ms => {
+    drift.style.left = (ms % 1000) / 50
+    drift.style.top = (ms % 1000) / 500
+})
+
+    </script>
+</html>
