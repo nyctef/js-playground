@@ -67,6 +67,22 @@ function setTop(ms, next) {
     }
 }
 
+function constant(value) {
+    return function(ms, next) {
+        return next(value)
+    }
+}
+
+function switchTo(when, animationArray) {
+    otherPipeline = buildPipeline(animationArray)
+    return function(ms, next) {
+        if (when(ms)) {
+            return otherPipeline(ms)
+        }
+        return next(ms)
+    }
+}
+
 function combine(...animationArrays) {
     let pipelines = animationArrays.map(aa => buildPipeline(aa))
     return function(ms, next) {
@@ -77,6 +93,8 @@ function combine(...animationArrays) {
 let animations = [
     baseline(),
     resetAfter(1000),
+    switchTo(ms => (ms > 200 && ms < 280), [constant(23), setLeft]),
+    switchTo(ms => (ms > 300 && ms < 350), [constant(25), setLeft]),
     combine(
         [scale(1/50), setLeft],
         [scale(1/500), setTop],
